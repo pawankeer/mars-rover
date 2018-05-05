@@ -1,39 +1,18 @@
 const prompt = require('prompt');
-const {actionTurn} = require('./action-turn');
-const {step} = require('./step');
+const {performCommand} = require('./perform-command');
 const {print} = require('./print');
-const {orientation: {NORTH}, command: {LEFT, RIGHT, STEP, QUIT}} = require('./constants');
+const {orientation: {NORTH}} = require('./constants');
 
-let currentOrientation = NORTH;
-let currentCoordinates = {x: 0, y: 0};
-let quit = false;
-
-const promptInput = function (callback) {
+const promptInput = function (currentOrientation, currentCoordinates, quit, callback) {
     print(currentOrientation, currentCoordinates);
-    prompt.get(['input'], callback);
-};
-
-const performAction = function (err, result) {
-    const input = result.input.toUpperCase();
-    switch (input) {
-        case STEP:
-            currentCoordinates = step(currentOrientation, currentCoordinates);
-            promptInput(performAction);
-            break;
-        case LEFT:
-        case RIGHT:
-            currentOrientation = actionTurn(currentOrientation, input);
-            promptInput(performAction);
-            break;
-        case QUIT:
-            quit = true;
-            break;
-        default:
-            promptInput(performAction);
-    }
+    prompt.get(['input'], callback(currentOrientation, currentCoordinates, quit, promptInput));
 };
 
 if (process.argv.indexOf('prod') !== -1) {
+    const currentOrientation = NORTH;
+    const currentCoordinates = {x: 0, y: 0};
+    const quit = false;
+
     prompt.start();
-    promptInput(performAction);
+    promptInput(currentOrientation, currentCoordinates, quit, performCommand);
 }
