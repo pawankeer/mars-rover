@@ -3,7 +3,7 @@
     "prompt": "^1.0.0"
   },
   "devDependencies": {
-    "mocha": "^5.1.1"
+    "mocha": "^8.0.1"
   },
   "scripts": {
     "test": "mocha ./src/*",
